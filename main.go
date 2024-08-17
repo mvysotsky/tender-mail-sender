@@ -2,22 +2,19 @@ package main
 
 import (
 	"fmt"
-	"mail-sender/database/enum"
-	"mail-sender/database/model"
-	"mail-sender/database/table"
+	"mail-sender/db"
+	"mail-sender/db/enum"
+	"mail-sender/db/model"
+	"mail-sender/db/table"
+	"mail-sender/tools"
 
 	. "github.com/go-jet/jet/v2/mysql"
 	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
-	"github.com/jmoiron/sqlx"
 )
 
 func main() {
-	// Database connection
-	db, err := sqlx.Open("mysql", "newtendex:devdbaccess@tcp(127.0.0.1:3307)/newtendex?parseTime=true")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	tools.LoadEnv()
+	db.Connect()
 
 	var mailQueue []model.MailQueue
 
@@ -29,7 +26,7 @@ func main() {
 	)
 
 	// Execute the query and scan the results into a struct
-	err = jet.Query(db, &mailQueue)
+	err := jet.Query(db.Handle, &mailQueue)
 	if err != nil {
 		panic(err)
 	}

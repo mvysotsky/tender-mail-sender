@@ -12,5 +12,3 @@ cd jet && go build -o dir_path ./cmd/jet
 ```sh
 jet -dsn="newtendex:devdbaccess@tcp(127.0.0.1:3307)/newtendex" -path=./.gen -source="mariadb"
 ```
-
-
