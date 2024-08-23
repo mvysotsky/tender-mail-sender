@@ -8,7 +8,9 @@ import (
 	"github.com/go-jet/jet/v2/mysql"
 )
 
-func GetTemplateByID(templateID uint32) (template model.Templates, err error) {
+type Template model.Templates
+
+func GetTemplateByID(templateID uint32) (template Template, err error) {
 	err = mysql.SELECT(table.Templates.AllColumns).FROM(
 		table.Templates,
 	).WHERE(

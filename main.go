@@ -6,6 +6,7 @@ import (
 	"mail-sender/db"
 	"mail-sender/db/model"
 	"mail-sender/db/queries"
+	"mail-sender/db/repos"
 	"mail-sender/tools"
 
 	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
@@ -15,7 +16,7 @@ func main() {
 	tools.LoadEnv()
 	db.Connect()
 
-	queue, err := queries.GetPendingMail()
+	queue, err := repos.MailQueue().GetPendingMail()
 	if err != nil {
 		log.Fatalf("Error getting pending mail: %v", err)
 	}
@@ -27,9 +28,18 @@ func main() {
 }
 
 func send(entry model.MailQueue) {
-	template, err := queries.GetTemplateByID(entry.TemplateID)
-	if err != nil {
+	var (
+		template queries.Template
+		tender   queries.Tender
+		err      error
+	)
+
+	if template, err = queries.GetTemplateByID(entry.TemplateID); err != nil {
 		log.Fatalf("Error getting template: %v", err)
+	}
+
+	if tender, err = queries.GetTender(entry.TenderID); err != nil {
+		log.Fatalf("Error getting tender: %v", err)
 	}
 
 	// Send the email
