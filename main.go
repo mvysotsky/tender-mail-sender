@@ -5,7 +5,6 @@ import (
 	"log"
 	"mail-sender/db"
 	"mail-sender/db/model"
-	"mail-sender/db/queries"
 	"mail-sender/db/repos"
 	"mail-sender/tools"
 
@@ -29,16 +28,16 @@ func main() {
 
 func send(entry model.MailQueue) {
 	var (
-		template queries.Template
-		tender   queries.Tender
+		template repos.Template
+		tender   repos.Tender
 		err      error
 	)
 
-	if template, err = queries.GetTemplateByID(entry.TemplateID); err != nil {
+	if template, err = repos.GetTemplateByID(entry.TemplateID); err != nil {
 		log.Fatalf("Error getting template: %v", err)
 	}
 
-	if tender, err = queries.GetTender(entry.TenderID); err != nil {
+	if tender, err = repos.GetTender(entry.TenderID); err != nil {
 		log.Fatalf("Error getting tender: %v", err)
 	}
 
