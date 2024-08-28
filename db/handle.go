@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"mail-sender/tools"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql" // Import the MySQL driver
 )
 
 var Handle *sql.DB

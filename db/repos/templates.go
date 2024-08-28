@@ -9,21 +9,21 @@ import (
 	"github.com/go-jet/jet/v2/mysql"
 )
 
-type DBTemplate interface {
+type DBTemplates interface {
 	GetTemplateByID(templateID uint32) (template model.Templates, err error)
 }
 
-type dbTemplate struct {
+type dbTemplates struct {
 	dbHandle *sql.DB
 }
 
-func Template() DBTemplate {
-	return dbTemplate{
+func Templates() DBTemplates {
+	return dbTemplates{
 		dbHandle: db.Handle,
 	}
 }
 
-func (r dbTemplate) GetTemplateByID(templateID uint32) (template model.Templates, err error) {
+func (r dbTemplates) GetTemplateByID(templateID uint32) (template model.Templates, err error) {
 	err = mysql.
 		SELECT(table.Templates.AllColumns).
 		FROM(table.Templates).
