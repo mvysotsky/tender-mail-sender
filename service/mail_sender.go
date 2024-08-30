@@ -18,7 +18,7 @@ type mailSender struct {
 }
 
 func NewMailSender() MailSender {
-	return mailSender{
+	return &mailSender{
 		mailQueue: repos.MailQueue(),
 		templates: repos.Templates(),
 		tenders:   repos.Tenders(),
@@ -26,7 +26,7 @@ func NewMailSender() MailSender {
 	}
 }
 
-func (s mailSender) SendEmailNotifications() error {
+func (s *mailSender) SendEmailNotifications() error {
 	queue, err := s.mailQueue.GetPendingMail()
 	if err != nil {
 		return err
@@ -56,19 +56,22 @@ func (s mailSender) SendEmailNotifications() error {
 	return nil
 }
 
-func (s mailSender) send(entry repos.MailQueueEntry) error {
-	template, err := s.templates.GetTemplateByID(entry.TemplateID)
-	if err != nil {
+func (s *mailSender) send(entry repos.MailQueueEntry) (err error) {
+	var (
+		template string
+		tender   repos.Tender
+		user     repos.User
+	)
+
+	if template, err = s.templates.GetTemplateByID(entry.TemplateID); err != nil {
 		return err
 	}
 
-	tender, err := s.tenders.GetTender(entry.TenderID)
-	if err != nil {
+	if tender, err = s.tenders.GetTender(entry.TenderID); err != nil {
 		return err
 	}
 
-	user, err := s.users.GetUser(entry.UserID)
-	if err != nil {
+	if user, err = s.users.GetUser(entry.UserID); err != nil {
 		return err
 	}
 
